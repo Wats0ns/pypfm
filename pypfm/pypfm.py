@@ -1,5 +1,5 @@
 import numpy as np
-#import cv2
+import sys
 import re
 reg = re.compile(r'^(\d+)\s(\d+)\s$')
 
@@ -9,7 +9,7 @@ BENDIAN_SIZE = len('{:f}\n'.format(1))
 
 
 class PFMLoader:
-    def __init__(self, dim, color, endian='<'):
+    def __init__(self, dim=None, color=True, endian='<'):
         self.width, self.height = dim
         self.color = color
         self.endian = endian
@@ -26,3 +26,18 @@ class PFMLoader:
         data = np.fromfile(path, self.endian + 'f', offset=self.data_size)
         data = np.reshape(data, self.shape)
         return data
+
+    def save_pfm(self, path, image, scale=1):
+        if image.dtype.name != 'float32':
+            raise ValueError('Image dtype must be float32.')
+
+        color = self.color
+        endian = image.dtype.byteorder
+        if endian == '<' or endian == '=' and sys.byteorder == 'little':
+            scale = -scale
+        with open(path, 'w') as file:
+            file.write('PF\n' if color else 'Pf\n')
+            file.write('%d %d\n' % (image.shape[1], image.shape[0]))
+            file.write('%f\n' % scale)
+            image.tofile(file)
+
