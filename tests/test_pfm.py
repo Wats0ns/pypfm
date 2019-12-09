@@ -13,6 +13,15 @@ def test_save_and_load():
     res = loader.load_pfm('test.pfm')
     assert np.array_equal(res, data)
 
+def test_save_and_load_no_size():
+    shape = (2, 3)
+    data = np.random.rand(shape[0], shape[1], 1).astype('float32')
+    loader = PFMLoader(color=False, compress=False)
+
+    loader.save_pfm('test.pfm', data)
+    res = loader.load_pfm('test.pfm')
+    assert np.array_equal(res, data)
+
 
 def test_save_and_load_with_compression():
     import pypfm

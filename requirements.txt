@@ -1,2 +1,2 @@
 pyzfp
-numpy
+numpy>=1.17.0

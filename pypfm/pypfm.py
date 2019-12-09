@@ -11,20 +11,58 @@ BENDIAN_SIZE = len('{:f}\n'.format(1))
 
 class PFMLoader:
     def __init__(self, dim=None, color=True, endian='<', compress=False):
-        self.width, self.height = dim
         self.color = color
         self.endian = endian
+        self.dim = None
+        if dim:
+            self.dim = dim
+            width, height = dim
+            self.build_size(width, height, color, endian)
+        self.compress = compress
+
+    def build_size(self, width, height, color, endian):
+        self.color = color
+        self.width, self.height = width, height
         self.dim_size = len('{0} {1}\n'.format(self.width, self.height))
         if endian == '<':
             self.data_size = HEADER_SIZE + self.dim_size + LENDIAN_SIZE
         else:
             self.data_size = HEADER_SIZE + self.dim_size + BENDIAN_SIZE
         self.shape = (self.height, self.width, 3) if self.color else (self.height, self.width, 1)
-        self.compress = compress
-        print(self.data_size)
+        # print(self.data_size)
+
+    def extract_dim(self, reader):
+        header = reader.readline().rstrip().decode('ascii')
+        if header == 'PF':
+            color = True    
+        elif header == 'Pf':
+            color = False
+        else:
+            raise Exception('Not a PFM file.')
+
+        dim_match = re.match(r'^(\d+)\s(\d+)\s$', reader.readline().decode('ascii'))
+        if dim_match:
+            width, height = map(int, dim_match.groups())
+        else:
+            raise Exception('Malformed PFM header.')
+        scale = float(reader.readline().rstrip())
+        if scale < 0: # little-endian
+            endian = '<'
+            scale = -scale
+        else:
+            endian = '>' # big-endian
+        self.build_size(width, height, color, endian)
+
 
     def load_pfm(self, path):
-        data = np.fromfile(path, offset=self.data_size, dtype=np.uint8 if self.compress else self.endian + 'f')
+        with open(path, 'rb') as f:
+            offset = 0
+            if not self.dim:
+                self.extract_dim(f)
+            else:
+                offset = self.data_size
+            data = np.fromfile(f, offset=offset, dtype=np.uint8 if self.compress else self.endian + 'f')
+    
         # return data
         # print('At load: ', self.shape, data.dtype, np.ascontiguousarray(data, dtype=np.dtype('uint8').shape))
         if self.compress:
