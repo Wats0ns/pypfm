@@ -42,4 +42,4 @@ def test_save_and_load_with_compression():
     print(res)
     print(mean_error, relative_error)
     # q
-    assert relative_error < 0.1
+    assert relative_error < 0.5
