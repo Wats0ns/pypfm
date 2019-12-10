@@ -8,5 +8,6 @@ setup(name='pypfm',
       author_email='Wats0ns@github.com',
       url='https://github.com/Wats0ns/pypfm',
       packages=['pypfm'],
-      install_requires=['pyzfp', 'numpy']
+      install_requires=['pyzfp', 'numpy'],
+      include_package_data=True,
      )
