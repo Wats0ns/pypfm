@@ -33,8 +33,8 @@ def test_save_and_load_with_compression():
     saved = loader.save_pfm('test_.pfm', data)
     res = loader.load_pfm('test_.pfm')
     # assert np.array_equal(saved, res)
-    res = decompress(np.ascontiguousarray(saved, dtype=np.uint8), data.shape, np.dtype('float32'), tolerance=0.5,
-               parallel=False)
+    # res = decompress(np.ascontiguousarray(saved, dtype=np.uint8), data.shape, np.dtype('float32'), tolerance=0.5,
+    #            parallel=False)
     error = np.abs((res - data))
     mean_error = np.mean(error)
     relative_error = np.mean(error /np.abs(data))
