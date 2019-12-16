@@ -89,3 +89,12 @@ class PFMLoader:
             image.tofile(file)
         return image
 
+    @staticmethod
+    def clean_values(image, valid_range, placeholder=0):
+        min_ = min(valid_range)
+        max_ = max(valid_range)
+        bef = np.count_nonzero(~image[image == placeholder])
+        image[image <= min_] = placeholder
+        image[image >= max_] = placeholder
+        aft = np.count_nonzero(~image[image == placeholder])
+        return image, abs(aft - bef)

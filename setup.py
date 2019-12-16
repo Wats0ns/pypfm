@@ -2,7 +2,7 @@ from distutils.core import setup
 from setuptools import find_packages, setup
 
 setup(name='pypfm',
-      version='1.4',
+      version='1.4.1',
       description='Python pfm files reader',
       author='Wats0ns',
       author_email='Wats0ns@github.com',

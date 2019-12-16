@@ -43,3 +43,11 @@ def test_save_and_load_with_compression():
     print(mean_error, relative_error)
     # q
     assert relative_error < 0.5
+
+
+def test_clean():
+    test = np.asarray([[1, 4], [4, 3], [6, 4]])
+    placeholder = 0
+    res = PFMLoader().clean_values(test, [2, 5], 0)
+    assert np.array_equal(res[0], np.asanyarray([[placeholder, 4], [4, 3], [placeholder, 4]]))
+    assert res[1] == 2
