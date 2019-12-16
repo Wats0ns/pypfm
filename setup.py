@@ -5,7 +5,7 @@ import pypandoc
 output = pypandoc.convert_file('README.md', 'rst')
 print(output)
 setup(name='pypfm',
-      version='1.4.2',
+      version='1.4.3',
       long_description=output,
       description='Python pfm files reader',
       author='Wats0ns',
